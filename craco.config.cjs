@@ -11,6 +11,7 @@ module.exports = {
 			"~/utils": path.resolve(__dirname, "src/utils"),
 			"~/assets": path.resolve(__dirname, "src/assets"),
 			"~/dto": path.resolve(__dirname, "src/dto"),
+			"~/styles": path.resolve(__dirname, "src/styles"),
 		},
 		maximumFileSizeToCacheInBytes: 5000000,
 	},

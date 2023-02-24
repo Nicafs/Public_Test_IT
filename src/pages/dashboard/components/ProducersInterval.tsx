@@ -1,20 +1,38 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { Card, CardContent, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 
+import { TableContent, TTableContentHeaders, CardContentTitle } from "~/components";
+import { MaxMinWinIntervalForProducersDTO } from "~/dto";
 import { MovieService } from "~/services";
 
+import { EmptyState } from "./EmptyState";
+
 export const ProducersInterval = () => {
-	const [listProducerInterval, setListProducerInterval] = useState<any>([]);
+	const [listProducerInterval, setListProducerInterval] = useState<MaxMinWinIntervalForProducersDTO>({ max: [], min: [] });
 	const [loadingList, setLoadingList] = useState<boolean>(true);
+
+	const headersMax: TTableContentHeaders[] = [
+		{ label: "Producer", field: "producer", width: "30%" },
+		{ label: "Interval", field: "interval", width: "20%" },
+		{ label: "Previous Year", field: "previousWin", width: "20%" },
+		{ label: "Following Year", field: "followingWin", width: "20%" },
+	];
+
+	const headersMin: TTableContentHeaders[] = [
+		{ label: "Producer", field: "producer", width: "30%" },
+		{ label: "Interval", field: "interval", width: "20%" },
+		{ label: "Previous Year", field: "previousWin", width: "20%" },
+		{ label: "Following Year", field: "followingWin", width: "20%" },
+	];
 
 	const getListProducerInterval = useCallback(() => {
 		setLoadingList(true);
 
-		MovieService.getAwards()
+		MovieService.getMaxMinIntervalProducers()
 			.then(({ data }) => {
 				setLoadingList(false);
-				setListProducerInterval(data || []);
+				setListProducerInterval(data || { max: [], min: [] });
 			})
 			.catch(() => {
 				setLoadingList(false);
@@ -26,68 +44,42 @@ export const ProducersInterval = () => {
 	}, [getListProducerInterval]);
 
 	return (
-		<Card sx={{ minWidth: 275 }}>
-			<CardContent>
+		<CardContentTitle title="Producers with longest and shortest interval between wins">
+			<>
 				{loadingList && <CircularProgress />}
 
 				{!loadingList && (
-					<>
-						{(!listProducerInterval?.max || listProducerInterval?.max.length === 0) && <h3>Nenhum dado encontrado</h3>}
+					<Grid container spacing={2}>
+						<Grid item xs={12}>
+							<Box>
+								<Typography fontSize="18px" sx={{ mb: 1 }}>
+									Maximum
+								</Typography>
+							</Box>
 
-						{!!listProducerInterval?.max && listProducerInterval?.max.length > 0 && (
-							<TableContainer component={Paper}>
-								<Table sx={{ minWidth: 650 }} aria-label="simple table">
-									<TableHead>
-										<TableRow>
-											<TableCell>Producer</TableCell>
-											<TableCell>Interval</TableCell>
-											<TableCell>Previous Year</TableCell>
-											<TableCell>Following Year</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{listProducerInterval.max.map((row) => (
-											<TableRow key={row.name} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-												<TableCell>{row.producer}</TableCell>
-												<TableCell>{row.interval}</TableCell>
-												<TableCell>{row.previousWin}</TableCell>
-												<TableCell>{row.followingWin}</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
-						)}
+							{(!listProducerInterval?.max || listProducerInterval?.max.length === 0) && <EmptyState />}
 
-						{(!listProducerInterval?.min || listProducerInterval?.min.length === 0) && <h3>Nenhum dado encontrado</h3>}
+							{!!listProducerInterval?.max && listProducerInterval?.max.length > 0 && (
+								<TableContent headers={headersMax} rows={listProducerInterval?.max} />
+							)}
+						</Grid>
 
-						{!!listProducerInterval?.min && listProducerInterval?.min.length > 0 && (
-							<TableContainer component={Paper}>
-								<Table sx={{ minWidth: 650 }} aria-label="simple table">
-									<TableHead>
-										<TableRow>
-											<TableCell>Producer</TableCell>
-											<TableCell>Interval</TableCell>
-											<TableCell>Previous Year</TableCell>
-											<TableCell>Following Year</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{listProducerInterval.min.map((row) => (
-											<TableRow key={row.name} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-												<TableCell>{row.producer}</TableCell>
-												<TableCell>{row.interval}</TableCell>
-												<TableCell>{row.previousWin}</TableCell>
-												<TableCell>{row.followingWin}</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
-						)}
-					</>
+						<Grid item xs={12}>
+							<Box>
+								<Typography fontSize="18px" sx={{ mb: 1 }}>
+									Minimum
+								</Typography>
+							</Box>
+
+							{(!listProducerInterval?.min || listProducerInterval?.min.length === 0) && <h3>Nenhum dado encontrado</h3>}
+
+							{!!listProducerInterval?.min && listProducerInterval?.min.length > 0 && (
+								<TableContent headers={headersMin} rows={listProducerInterval?.min} />
+							)}
+						</Grid>
+					</Grid>
 				)}
-			</CardContent>
-		</Card>
+			</>
+		</CardContentTitle>
 	);
 };

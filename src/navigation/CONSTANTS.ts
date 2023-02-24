@@ -1,25 +1,20 @@
 import { lazy, LazyExoticComponent } from "react";
 
-export const ROOT = "/";
-export const HOME = "/home";
-
 export type TPath = {
 	path: string;
-	exact: boolean;
 	element: LazyExoticComponent<() => JSX.Element>;
-	isPrivate?: boolean;
-	disableGutters?: boolean;
+	label: string;
 };
 
 export const paths: TPath[] = [
 	{
 		path: "/dashboard",
-		exact: true,
+		label: "Dashboard",
 		element: lazy(() => import("../pages/dashboard")),
 	},
 	{
 		path: "/movie-list",
-		exact: true,
+		label: "Movie List",
 		element: lazy(() => import("../pages/movie-list")),
 	},
 ];

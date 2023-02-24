@@ -1,17 +1,26 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { Card, CardContent, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
+import { TableContent, TTableContentHeaders, CardContentTitle } from "~/components";
+import { YearsWithMultipleWinnersItemDTO } from "~/dto";
 import { MovieService } from "~/services";
 
+import { EmptyState } from "./EmptyState";
+
 export const ListWinnersYears = () => {
-	const [listWinnersYears, setListWinnersYears] = useState<any>([]);
+	const [listWinnersYears, setListWinnersYears] = useState<YearsWithMultipleWinnersItemDTO[]>([]);
 	const [loadingList, setLoadingList] = useState<boolean>(true);
 
-	const getListWinnersYears = useCallback(() => {
-		setLoadingList(true);
+	const headers: TTableContentHeaders[] = [
+		{ label: "Year", field: "year" },
+		{ label: "Win Count", field: "winnerCount" },
+	];
 
-		MovieService.getAwardsMovies()
+	const getListWinnersYears = useCallback(() => {
+		setLoadingList(false);
+
+		MovieService.getYearsWinners()
 			.then(({ data }) => {
 				setLoadingList(false);
 				setListWinnersYears(data?.years || []);
@@ -26,37 +35,18 @@ export const ListWinnersYears = () => {
 	}, [getListWinnersYears]);
 
 	return (
-		<Card sx={{ minWidth: 275 }}>
-			<CardContent>
+		<CardContentTitle title="List years with multiple winners">
+			<>
 				{loadingList && <CircularProgress />}
 
 				{!loadingList && (
 					<>
-						{(!listWinnersYears || listWinnersYears.length === 0) && <h3>Nenhum dado encontrado</h3>}
+						{(!listWinnersYears || listWinnersYears.length === 0) && <EmptyState />}
 
-						{!!listWinnersYears && listWinnersYears.length > 0 && (
-							<TableContainer component={Paper}>
-								<Table sx={{ minWidth: 650 }} aria-label="simple table">
-									<TableHead>
-										<TableRow>
-											<TableCell>Year</TableCell>
-											<TableCell align="right">Win Count</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{listWinnersYears.map((row) => (
-											<TableRow key={row.name} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-												<TableCell>{row.year}</TableCell>
-												<TableCell align="right">{row.winnerCount}</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
-						)}
+						{!!listWinnersYears && listWinnersYears.length > 0 && <TableContent id="table-winners-years" headers={headers} rows={listWinnersYears} />}
 					</>
 				)}
-			</CardContent>
-		</Card>
+			</>
+		</CardContentTitle>
 	);
 };

@@ -1,20 +1,32 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { Card, CardContent, CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
+import { TableContent, TTableContentHeaders, CardContentTitle } from "~/components";
+import { StudiosWithWinCountItemDTO } from "~/dto";
 import { MovieService } from "~/services";
 
+import { EmptyState } from "./EmptyState";
+
 export const TopStudios = () => {
-	const [listStudios, setListStudios] = useState<any>([]);
+	const [listTopStudios, setListTopStudios] = useState<StudiosWithWinCountItemDTO[]>([]);
 	const [loadingList, setLoadingList] = useState<boolean>(true);
 
-	const getListStudios = useCallback(() => {
+	const headers: TTableContentHeaders[] = [
+		{ label: "Name", field: "name" },
+		{ label: "Win Count", field: "winCount" },
+	];
+
+	const getListTopStudios = useCallback(() => {
 		setLoadingList(true);
 
-		MovieService.getStudios()
+		MovieService.getStudiosCount()
 			.then(({ data }) => {
 				setLoadingList(false);
-				setListStudios(data?.studios || []);
+
+				const top3Studios = (data?.studios || []).splice(0, 3);
+
+				setListTopStudios(top3Studios);
 			})
 			.catch(() => {
 				setLoadingList(false);
@@ -22,41 +34,22 @@ export const TopStudios = () => {
 	}, []);
 
 	useEffect(() => {
-		getListStudios();
-	}, [getListStudios]);
+		getListTopStudios();
+	}, [getListTopStudios]);
 
 	return (
-		<Card sx={{ minWidth: 275 }}>
-			<CardContent>
+		<CardContentTitle title="Top 3 studios with winners">
+			<>
 				{loadingList && <CircularProgress />}
 
 				{!loadingList && (
 					<>
-						{(!listStudios || listStudios.length === 0) && <h3>Nenhum dado encontrado</h3>}
+						{(!listTopStudios || listTopStudios.length === 0) && <EmptyState />}
 
-						{!!listStudios && listStudios.length > 0 && (
-							<TableContainer component={Paper}>
-								<Table sx={{ minWidth: 650 }} aria-label="simple table">
-									<TableHead>
-										<TableRow>
-											<TableCell>Name</TableCell>
-											<TableCell align="right">Win Count</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{listStudios.map((row) => (
-											<TableRow key={row.name} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-												<TableCell>{row.name}</TableCell>
-												<TableCell align="right">{row.winCount}</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
-						)}
+						{!!listTopStudios && listTopStudios.length > 0 && <TableContent headers={headers} rows={listTopStudios} />}
 					</>
 				)}
-			</CardContent>
-		</Card>
+			</>
+		</CardContentTitle>
 	);
 };

@@ -1,57 +1,69 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { MoviesContentDTO } from "~/dto";
 import { MovieService } from "~/services";
 
 import { MovieListView } from "./MovieListView";
 
+export type TPagination = {
+	size: number;
+	page: number;
+	count: number;
+};
+
 export const MovieListContainer = () => {
-	const [listMovies, setListMovies] = useState<any>([]);
+	const [listMovies, setListMovies] = useState<MoviesContentDTO[]>([]);
 	const [loadingList, setLoadingList] = useState<boolean>(true);
+	const [loadingPage, setLoadingPage] = useState<boolean>(true);
 
-	const [onlyWinner, setOnlyWinner] = useState<boolean>(false);
-	const [movieWinner, setMovieWinner] = useState<number>();
+	const [winnerFilter, setWinnerFilter] = useState<number>(0);
+	const [yearFilter, setYearFilter] = useState<number | undefined>(undefined);
 
-	const [pagination, setPagination] = useState<{
-		limit: number;
-		page: number;
-		count: number;
-	}>({ limit: 5, page: 0, count: 0 });
+	const [pagination, setPagination] = useState<TPagination>({ size: 15, page: 0, count: 0 });
 
 	const getListMovies = useCallback(() => {
-		setLoadingList(true);
-
 		const payload = {
 			page: pagination?.page || 0,
-			size: pagination?.limit || 5,
-			winner: onlyWinner,
-			year: movieWinner,
+			size: pagination?.size || 15,
+			...(!!winnerFilter && { winner: winnerFilter === 1 }),
+			year: yearFilter,
 		};
 
 		MovieService.getMovies(payload)
 			.then(({ data }) => {
-				const { content = [], totalElements = 0 } = data || {};
+				const { content = [], totalPages = 1 } = data || {};
 
 				setLoadingList(false);
+				setLoadingPage(false);
 				setListMovies(content || []);
 
-				pagination.count = totalElements;
+				pagination.count = totalPages - 1;
 				setPagination(pagination);
 			})
 			.catch(() => {
 				setLoadingList(false);
+				setLoadingPage(false);
 			});
-	}, [movieWinner, onlyWinner, pagination]);
+	}, [yearFilter, winnerFilter, pagination]);
+
+	const handleChangeYear = (value: number) => {
+		if (value !== yearFilter) {
+			setLoadingList(true);
+			setYearFilter(value);
+		}
+	};
+
+	const handleChangeWinner = (value: number) => {
+		if (value !== winnerFilter) {
+			setLoadingList(true);
+			setWinnerFilter(value);
+		}
+	};
 
 	const onChangePage = (page: number) => {
 		const newPagination = { ...pagination };
 		newPagination.page = page;
-		setPagination(newPagination);
-	};
-
-	const onChangeRowsPerPage = (rowsPerPage: number) => {
-		const newPagination = { ...pagination };
-		newPagination.limit = rowsPerPage;
-		newPagination.page = 0;
+		setLoadingPage(true);
 		setPagination(newPagination);
 	};
 
@@ -62,10 +74,13 @@ export const MovieListContainer = () => {
 	return (
 		<MovieListView
 			loadingList={loadingList}
+			loadingPage={loadingPage}
 			listMovies={listMovies}
 			onChangePage={onChangePage}
-			onChangeRowsPerPage={onChangeRowsPerPage}
 			pagination={pagination}
+			handleChangeYear={handleChangeYear}
+			handleChangeWinner={handleChangeWinner}
+			winnerFilter={winnerFilter}
 		/>
 	);
 };

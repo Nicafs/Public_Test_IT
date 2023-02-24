@@ -1,16 +1,11 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import { Box } from "@mui/material";
-
-// import { Container } from "@mui/material";
-
-import { HeaderContainer, Loading } from "~/components";
+import { Loading } from "~/components";
 
 import { paths, TPath } from "./CONSTANTS";
+import { LayoutContainerMovie } from "./layouts";
 import { NotFound } from "./NotFound";
-
-const Dashboard = lazy(() => import("../pages/dashboard"));
 
 export const RouterConfig: React.FC = () => {
 	return (
@@ -26,11 +21,9 @@ export const RouterConfig: React.FC = () => {
 						path={path}
 						element={
 							<Suspense fallback={<Loading />}>
-								<>
-									<HeaderContainer />
-
+								<LayoutContainerMovie paths={paths}>
 									<Element />
-								</>
+								</LayoutContainerMovie>
 							</Suspense>
 						}
 						{...rest}

@@ -155,7 +155,11 @@
 					],
 					[
 						"~/dto",
-						"./src/redux/dto/"
+						"./src/dto/"
+					],
+					[
+						"~/styles",
+						"./src/styles/"
 					]
 				],
 				"extensions": [

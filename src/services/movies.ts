@@ -1,3 +1,7 @@
+import { AxiosResponse } from "axios";
+
+import { MaxMinWinIntervalForProducersDTO, MoviesDTO, MoviesPerYearDTO, StudiosWithWinCountDTO, YearsWithMultipleWinnersDTO } from "~/dto";
+
 import { HttpService } from "./config/http.service";
 
 export type TGetMovies = {
@@ -7,7 +11,7 @@ export type TGetMovies = {
 	year: number;
 };
 
-const getMovies = async ({ page, size, winner, year }: TGetMovies): Promise<any> => {
+const getMovies = async ({ page, size, winner, year }: TGetMovies): Promise<AxiosResponse<MoviesDTO>> => {
 	return HttpService.get(`movies`, {
 		params: {
 			page,
@@ -18,7 +22,7 @@ const getMovies = async ({ page, size, winner, year }: TGetMovies): Promise<any>
 	});
 };
 
-const getAwardsMovies = async (): Promise<any> => {
+const getYearsWinners = async (): Promise<AxiosResponse<YearsWithMultipleWinnersDTO>> => {
 	return HttpService.get(`movies`, {
 		params: {
 			projection: "years-with-multiple-winners",
@@ -26,7 +30,7 @@ const getAwardsMovies = async (): Promise<any> => {
 	});
 };
 
-const getStudios = async (): Promise<any> => {
+const getStudiosCount = async (): Promise<AxiosResponse<StudiosWithWinCountDTO>> => {
 	return HttpService.get(`movies`, {
 		params: {
 			projection: "studios-with-win-count",
@@ -34,7 +38,7 @@ const getStudios = async (): Promise<any> => {
 	});
 };
 
-const getAwards = async (): Promise<any> => {
+const getMaxMinIntervalProducers = async (): Promise<AxiosResponse<MaxMinWinIntervalForProducersDTO>> => {
 	return HttpService.get(`movies`, {
 		params: {
 			projection: "max-min-win-interval-for-producers",
@@ -43,11 +47,11 @@ const getAwards = async (): Promise<any> => {
 };
 
 export type TGetMoviesPerYear = {
-	winner: number;
-	year: number;
+	winner?: boolean;
+	year?: number;
 };
 
-const getMoviesPerYear = async ({ winner, year }: TGetMoviesPerYear): Promise<any> => {
+const getMoviesPerYear = async ({ winner = false, year }: TGetMoviesPerYear): Promise<AxiosResponse<MoviesPerYearDTO[]>> => {
 	return HttpService.get(`movies`, {
 		params: {
 			winner,
@@ -58,8 +62,8 @@ const getMoviesPerYear = async ({ winner, year }: TGetMoviesPerYear): Promise<an
 
 export const MovieService = {
 	getMovies,
+	getYearsWinners,
+	getStudiosCount,
+	getMaxMinIntervalProducers,
 	getMoviesPerYear,
-	getAwardsMovies,
-	getAwards,
-	getStudios,
 };
