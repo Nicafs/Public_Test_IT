@@ -1,12 +1,16 @@
-import React, { Suspense } from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import { Container } from "@mui/material";
+import { Box } from "@mui/material";
+
+// import { Container } from "@mui/material";
 
 import { HeaderContainer, Loading } from "~/components";
 
 import { paths, TPath } from "./CONSTANTS";
 import { NotFound } from "./NotFound";
+
+const Dashboard = lazy(() => import("../pages/dashboard"));
 
 export const RouterConfig: React.FC = () => {
 	return (
@@ -14,7 +18,7 @@ export const RouterConfig: React.FC = () => {
 			<Route path="/" element={<Navigate to="dashboard" replace />} />
 
 			{paths.map((p: TPath) => {
-				const { path, element: Element, disableGutters, ...rest } = p;
+				const { path, element: Element, ...rest } = p;
 
 				return (
 					<Route
@@ -25,19 +29,7 @@ export const RouterConfig: React.FC = () => {
 								<>
 									<HeaderContainer />
 
-									<Container
-										maxWidth="xl"
-										disableGutters
-										sx={{
-											mt: "58px !important",
-											minHeight: "calc(100vh - 58px)",
-											display: "flex",
-											flexDirection: "column",
-										}}
-										style={{ margin: "0 auto" }}
-									>
-										<Element />
-									</Container>
+									<Element />
 								</>
 							</Suspense>
 						}
