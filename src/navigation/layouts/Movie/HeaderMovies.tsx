@@ -21,6 +21,7 @@ export const HeaderMovies = ({ handleDrawerToggle }: THeaderView): JSX.Element =
 							<Box display="flex">
 								<Box sx={{ display: { xs: "flex", md: "none" } }}>
 									<IconButton
+										type="button"
 										color="inherit"
 										aria-label="open drawer"
 										edge="start"

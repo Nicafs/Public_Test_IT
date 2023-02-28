@@ -26,7 +26,7 @@ export const MovieListContainer = () => {
 			page: pagination?.page || 0,
 			size: pagination?.size || 15,
 			...(!!winnerFilter && { winner: winnerFilter === 1 }),
-			year: yearFilter,
+			...(!!yearFilter && { year: yearFilter }),
 		};
 
 		MovieService.getMovies(payload)
@@ -81,6 +81,7 @@ export const MovieListContainer = () => {
 			handleChangeYear={handleChangeYear}
 			handleChangeWinner={handleChangeWinner}
 			winnerFilter={winnerFilter}
+			yearFilter={yearFilter}
 		/>
 	);
 };

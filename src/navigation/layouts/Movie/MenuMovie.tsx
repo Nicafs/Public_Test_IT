@@ -69,7 +69,7 @@ export const MenuMovie = ({ paths, mobileOpen, drawerWidth, handleDrawerToggle }
 	const menuDesktop = (
 		<List>
 			{paths.map((path, index) => (
-				<MenuItemDesktop label={path.label} path={path.path} index={index} handleMenuItemClick={handleMenuItemClick} />
+				<MenuItemDesktop key={path.label} label={path.label} path={path.path} index={index} handleMenuItemClick={handleMenuItemClick} />
 			))}
 		</List>
 	);
@@ -78,6 +78,7 @@ export const MenuMovie = ({ paths, mobileOpen, drawerWidth, handleDrawerToggle }
 		<List sx={{ py: 7 }}>
 			{paths.map((path, index) => (
 				<MenuItemDesktop
+					key={path.label}
 					label={path.label}
 					path={path.path}
 					index={index}

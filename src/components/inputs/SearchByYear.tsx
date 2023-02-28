@@ -10,12 +10,17 @@ export type TSearchByYear = InputBaseProps & {
 };
 
 export const SearchByYear = ({ placeholder, onClickSearch, defaultValue, ...rest }: TSearchByYear) => {
-	const [searchValue, setSearchValue] = useState<number>(defaultValue);
+	const [searchValue, setSearchValue] = useState<number | undefined>(defaultValue);
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		onClickSearch(searchValue);
+	};
 
 	return (
-		<Paper component="form" sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+		<Paper component="form" sx={{ display: "flex", alignItems: "center", width: "100%" }} onSubmit={handleSubmit} noValidate autoComplete="off">
 			<InputBase
-				value={searchValue}
+				value={searchValue || ""}
 				onChange={(e) => setSearchValue(Number(e.target.value))}
 				type="number"
 				sx={{ ml: 1, flex: 1 }}
@@ -24,7 +29,7 @@ export const SearchByYear = ({ placeholder, onClickSearch, defaultValue, ...rest
 				{...rest}
 			/>
 
-			<IconButton type="button" sx={{ p: "10px" }} aria-label="button search" onClick={() => onClickSearch(searchValue)}>
+			<IconButton type="submit" sx={{ p: "10px" }} aria-label="button search" onClick={() => onClickSearch(searchValue)}>
 				<SearchIcon />
 			</IconButton>
 		</Paper>

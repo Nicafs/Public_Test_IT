@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { Box, CircularProgress, Grid } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 import { SearchByYear, TableContent, TTableContentHeaders, CardContentTitle } from "~/components";
 import { MoviesPerYearDTO } from "~/dto";
@@ -23,7 +23,7 @@ export const MoviesWinners = () => {
 	const getListWinnersYears = useCallback(() => {
 		setLoadingList(true);
 
-		MovieService.getMoviesPerYear({ year: yearSelect })
+		MovieService.getMoviesPerYear({ year: yearSelect, winner: true })
 			.then(({ data }) => {
 				setLoadingList(false);
 				setListWinnersYears(data || []);
@@ -43,33 +43,35 @@ export const MoviesWinners = () => {
 
 	return (
 		<CardContentTitle title="List movie winners by year">
-			<Grid container spacing={2}>
-				<Grid item xs={12}>
+			<Box display="flex" flexDirection="column" height="100%" gap="16px">
+				<Box>
 					<SearchByYear
 						placeholder="Search by year"
 						onClickSearch={(value: number) => handleClickSearch(value)}
 						defaultValue={new Date().getFullYear()}
 					/>
-				</Grid>
+				</Box>
 
-				<Grid item xs={12} sx={{ flex: "1 1 auto" }}>
-					<>
-						{loadingList && <CircularProgress />}
+				<>
+					{loadingList && (
+						<Box flex="1 1 auto" display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+							<CircularProgress />
+						</Box>
+					)}
 
-						{!loadingList && (
-							<>
-								{(!listWinnersYears || listWinnersYears.length === 0) && (
-									<Box mt={2}>
-										<EmptyState />
-									</Box>
-								)}
+					{!loadingList && (
+						<>
+							{(!listWinnersYears || listWinnersYears.length === 0) && (
+								<Box mt={2}>
+									<EmptyState />
+								</Box>
+							)}
 
-								{!!listWinnersYears && listWinnersYears.length > 0 && <TableContent headers={headers} rows={listWinnersYears} />}
-							</>
-						)}
-					</>
-				</Grid>
-			</Grid>
+							{!!listWinnersYears && listWinnersYears.length > 0 && <TableContent headers={headers} rows={listWinnersYears} />}
+						</>
+					)}
+				</>
+			</Box>
 		</CardContentTitle>
 	);
 };

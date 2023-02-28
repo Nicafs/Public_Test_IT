@@ -4,7 +4,7 @@ export const NotFound = () => (
 	<div>
 		<Typography variant="h2">404: Página não Encontrada!</Typography>
 
-		<Button variant="contained" color="primary" href="/">
+		<Button type="button" variant="contained" color="primary" href="/">
 			Ir para página inicial
 		</Button>
 	</div>
