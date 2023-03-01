@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 import { TableContent, TTableContentHeaders, CardContentTitle } from "~/components";
 import { StudiosWithWinCountItemDTO } from "~/dto";
@@ -40,7 +40,11 @@ export const TopStudios = () => {
 	return (
 		<CardContentTitle title="Top 3 studios with winners">
 			<>
-				{loadingList && <CircularProgress />}
+				{loadingList && (
+					<Box display="flex" justifyContent="center" alignItems="center" height="100%">
+						<CircularProgress />
+					</Box>
+				)}
 
 				{!loadingList && (
 					<>

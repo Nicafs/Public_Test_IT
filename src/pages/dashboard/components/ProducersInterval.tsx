@@ -46,7 +46,11 @@ export const ProducersInterval = () => {
 	return (
 		<CardContentTitle title="Producers with longest and shortest interval between wins">
 			<>
-				{loadingList && <CircularProgress />}
+				{loadingList && (
+					<Box display="flex" justifyContent="center" alignItems="center" height="100%">
+						<CircularProgress />
+					</Box>
+				)}
 
 				{!loadingList && (
 					<Grid container spacing={2}>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 import { TableContent, TTableContentHeaders, CardContentTitle } from "~/components";
 import { YearsWithMultipleWinnersItemDTO } from "~/dto";
@@ -18,7 +18,7 @@ export const ListWinnersYears = () => {
 	];
 
 	const getListWinnersYears = useCallback(() => {
-		setLoadingList(false);
+		setLoadingList(true);
 
 		MovieService.getYearsWinners()
 			.then(({ data }) => {
@@ -37,7 +37,11 @@ export const ListWinnersYears = () => {
 	return (
 		<CardContentTitle title="List years with multiple winners">
 			<>
-				{loadingList && <CircularProgress />}
+				{loadingList && (
+					<Box display="flex" justifyContent="center" alignItems="center" height="100%">
+						<CircularProgress />
+					</Box>
+				)}
 
 				{!loadingList && (
 					<>
