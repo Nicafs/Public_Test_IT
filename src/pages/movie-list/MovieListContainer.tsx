@@ -23,19 +23,19 @@ export const MovieListContainer = () => {
 
 	const getListMovies = useCallback(() => {
 		const payload = {
-			page: pagination?.page || 0,
-			size: pagination?.size || 15,
+			page: pagination.page,
+			size: pagination.size,
 			...(!!winnerFilter && { winner: winnerFilter === 1 }),
 			...(!!yearFilter && { year: yearFilter }),
 		};
 
 		MovieService.getMovies(payload)
 			.then(({ data }) => {
-				const { content = [], totalPages = 1 } = data || {};
+				const { content = [], totalPages = 1 } = data;
 
 				setLoadingList(false);
 				setLoadingPage(false);
-				setListMovies(content || []);
+				setListMovies(content);
 
 				pagination.count = totalPages - 1;
 				setPagination(pagination);

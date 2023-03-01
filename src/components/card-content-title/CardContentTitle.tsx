@@ -10,7 +10,7 @@ export const CardContentTitle = ({ title, children }: TCardContentTitle) => {
 		<Card sx={{ height: "100%" }}>
 			<CardContent sx={{ height: "calc(100% - 32px)", display: "flex", flexDirection: "column" }}>
 				<Box display="flex" flexDirection="column" height="100%">
-					<Typography fontSize="22px" fontWeight="bold" sx={{ mb: 1 }}>
+					<Typography role="heading" fontSize="22px" fontWeight="bold" sx={{ mb: 1 }}>
 						{title}
 					</Typography>
 

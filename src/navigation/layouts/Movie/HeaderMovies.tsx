@@ -21,6 +21,7 @@ export const HeaderMovies = ({ handleDrawerToggle }: THeaderView): JSX.Element =
 							<Box display="flex">
 								<Box sx={{ display: { xs: "flex", md: "none" } }}>
 									<IconButton
+										data-testid="toogle-menu"
 										type="button"
 										color="inherit"
 										aria-label="open drawer"
@@ -32,7 +33,7 @@ export const HeaderMovies = ({ handleDrawerToggle }: THeaderView): JSX.Element =
 									</IconButton>
 								</Box>
 
-								<img src={Logo} className="App-logo" alt="logo" style={{ width: "40px", height: "40px" }} />
+								<img src={Logo} className="App-logo" alt="Logo" style={{ width: "40px", height: "40px" }} />
 
 								<Box display="flex" justifyContent="center" alignItems={"center"}>
 									<Typography variant={"h4"} sx={{ fontSize: { xs: "20px", md: "30px" } }}>

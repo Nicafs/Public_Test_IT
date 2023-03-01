@@ -71,7 +71,7 @@ export const ProducersInterval = () => {
 								</Typography>
 							</Box>
 
-							{(!listProducerInterval?.min || listProducerInterval?.min.length === 0) && <h3>Nenhum dado encontrado</h3>}
+							{(!listProducerInterval?.min || listProducerInterval?.min.length === 0) && <EmptyState />}
 
 							{!!listProducerInterval?.min && listProducerInterval?.min.length > 0 && (
 								<TableContent headers={headersMin} rows={listProducerInterval?.min} />

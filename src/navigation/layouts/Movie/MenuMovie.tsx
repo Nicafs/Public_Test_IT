@@ -32,11 +32,12 @@ const StyledMenuItem = styled(MenuItem)(() => ({
 const MenuItemDesktop = ({ label, path, handleMenuItemClick, index }) => {
 	const [isHover, setIsHover] = useState<boolean>(false);
 
-	const isSelected = path.includes(location.pathname || "");
+	const isSelected = path.includes(location?.pathname);
 
 	return (
 		<StyledMenuItem
 			key={label}
+			data-testid={label.replace(" ", "_")}
 			selected={isSelected || isHover}
 			onClick={() => handleMenuItemClick(path)}
 			onMouseEnter={() => setIsHover(true)}
@@ -60,7 +61,7 @@ export type TMenuMovie = {
 export const MenuMovie = ({ paths, mobileOpen, drawerWidth, handleDrawerToggle }: TMenuMovie) => {
 	const navigate = useNavigate();
 
-	const container = window !== undefined ? () => window.document.body : undefined;
+	const container = window?.document?.body;
 
 	const handleMenuItemClick = (route: string) => {
 		navigate(route);

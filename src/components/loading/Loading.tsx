@@ -9,6 +9,7 @@ export const Loading = (): JSX.Element => {
 			}}
 		>
 			<CircularProgress
+				data-testid="circularLoading"
 				sx={{
 					position: "absolute",
 					top: "50%",

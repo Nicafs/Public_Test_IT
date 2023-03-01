@@ -1,6 +1,6 @@
 {
 	"name": "public_test_it",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"private": false,
 	"type": "module",
 	"dependencies": {
@@ -12,7 +12,7 @@
 		"@mui/material": "^5.11.10",
 		"@testing-library/jest-dom": "^5.14.1",
 		"@testing-library/react": "^14.0.0",
-		"@testing-library/user-event": "^13.2.1",
+		"@testing-library/user-event": "^14.4.3",
 		"@types/jest": "^27.0.1",
 		"@types/node": "^16.7.13",
 		"@types/react": "^18.0.0",
@@ -47,11 +47,26 @@
 	},
 	"jest": {
 		"moduleNameMapper": {
+			"~/app": "<rootDir>/src",
+			"~/navigation": "<rootDir>/src/navigation",
+			"~/pages": "<rootDir>/src/pages",
 			"~/components": "<rootDir>/src/components",
 			"~/services": "<rootDir>/src/services",
 			"~/dto": "<rootDir>/src/dto",
+			"~/assets": "<rootDir>/src/assets",
+			"~/utils": "<rootDir>/src/utils",
+			"~/styles": "<rootDir>/src/styles",
 			"axios": "axios/dist/node/axios.cjs"
-		}
+		},
+		"collectCoverageFrom": [
+			"src/**/*.{ts,tsx}",
+			"!<rootDir>/node_modules/",
+			"!<rootDir>/src/services/**",
+			"!<rootDir>/src/styles/**",
+			"!<rootDir>/src/navigation/CONSTANTS.ts",
+			"!<rootDir>/src/reportWebVitals.ts",
+			"!<rootDir>/src/index.tsx"
+		]
 	},
 	"eslintConfig": {
 		"extends": [
@@ -76,6 +91,7 @@
 	},
 	"devDependencies": {
 		"@babel/preset-env": "^7.20.2",
+		"@testing-library/dom": "^9.0.0",
 		"eslint": "^8.34.0",
 		"eslint-config-airbnb": "^19.0.4",
 		"eslint-config-airbnb-typescript": "^17.0.0",

@@ -43,10 +43,16 @@ export const MovieListView = ({
 	const filterWinner = () => {
 		return (
 			<FormControl sx={{ minWidth: "100%" }}>
-				<StyledSelect value={winnerFilter} label="" onChange={(e) => handleChangeWinner(Number(e.target.value))}>
-					<MenuItem value={0}>Yes/No</MenuItem>
-					<MenuItem value={1}>Yes</MenuItem>
-					<MenuItem value={2}>No</MenuItem>
+				<StyledSelect value={winnerFilter} label="" onChange={(e) => handleChangeWinner(Number(e.target.value))} data-testid="selectWinner">
+					<MenuItem data-testid="item-0" value={0}>
+						Yes/No
+					</MenuItem>
+					<MenuItem data-testid="item-1" value={1}>
+						Yes
+					</MenuItem>
+					<MenuItem data-testid="item-2" value={2}>
+						No
+					</MenuItem>
 				</StyledSelect>
 			</FormControl>
 		);
@@ -90,6 +96,7 @@ export const MovieListView = ({
 						{pagination.count > 1 && (
 							<Grid item xs={12} justifyContent={"center"} alignItems="center">
 								<Pagination
+									data-testid="pagination"
 									sx={{ display: "flex", justifyContent: "center" }}
 									shape="rounded"
 									count={pagination.count}

@@ -20,6 +20,7 @@ export const SearchByYear = ({ placeholder, onClickSearch, defaultValue, ...rest
 	return (
 		<Paper component="form" sx={{ display: "flex", alignItems: "center", width: "100%" }} onSubmit={handleSubmit} noValidate autoComplete="off">
 			<InputBase
+				data-testid="searchByYear"
 				value={searchValue || ""}
 				onChange={(e) => setSearchValue(Number(e.target.value))}
 				type="number"
@@ -29,7 +30,13 @@ export const SearchByYear = ({ placeholder, onClickSearch, defaultValue, ...rest
 				{...rest}
 			/>
 
-			<IconButton type="submit" sx={{ p: "10px" }} aria-label="button search" onClick={() => onClickSearch(searchValue)}>
+			<IconButton
+				data-testid="searchByYearBtn"
+				type="submit"
+				sx={{ p: "10px" }}
+				aria-label="button search"
+				onClick={() => onClickSearch(searchValue)}
+			>
 				<SearchIcon />
 			</IconButton>
 		</Paper>

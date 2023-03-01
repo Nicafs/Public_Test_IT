@@ -1,7 +1,8 @@
 import axios from "axios";
 
 import "@testing-library/jest-dom/extend-expect";
-import { screen, render } from "@testing-library/react";
+import { screen, render, waitFor, fireEvent, getByTestId } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { MovieService } from "../../services/movies";
 import { ListWinnersYears, MoviesWinners, ProducersInterval, TopStudios } from "./components";
@@ -19,20 +20,12 @@ jest.mock("axios", () => {
 	};
 });
 
-describe("<ListWinnersYears />", () => {
+describe("Dashboard test", () => {
 	beforeEach(() => {
 		axios.get = jest.fn();
 	});
 
-	beforeAll(() => {
-		console.error = function consoleErrorWithStack(message) {
-			const error = { message };
-			Error.captureStackTrace(error, consoleErrorWithStack);
-			console.log(error.message);
-		};
-	});
-
-	it("Test Component <ListWinnersYears />", async () => {
+	it("Test Component ListWinnersYears - Success Api", async () => {
 		const valueGet = {
 			years: [
 				{
@@ -52,57 +45,89 @@ describe("<ListWinnersYears />", () => {
 		// eslint-disable-next-line
 		const spyApi = jest.spyOn(MovieService, "getYearsWinners").mockResolvedValue({ data: valueGet } as any); // the function that we want to mock/spy
 
-		render(<ListWinnersYears />);
+		const { container } = render(<ListWinnersYears />);
 
-		expect(spyApi).toBeCalledTimes(1);
-		expect(await screen.findByText(/1986/i)).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.findByText(/List years with multiple winners/i));
+			expect(spyApi).toBeCalledTimes(1);
+			expect(screen.findByText(/1986/i));
+			expect(container.querySelector("table"));
+		});
 	});
 
-	it("Test Component <MoviesWinners />", async () => {
-		const valueGet = [
+	it("Test Component ListWinnersYears - Error Api", async () => {
+		const networkError = new Error("Some network error");
+		// eslint-disable-next-line
+		const spyApi = jest.spyOn(MovieService, "getYearsWinners").mockRejectedValueOnce(networkError); // the function that we want to mock/spy
+
+		const { container } = render(<ListWinnersYears />);
+
+		await waitFor(() => {
+			expect(screen.findByText(/List years with multiple winners/i));
+			expect(spyApi).toBeCalledTimes(1);
+			expect(screen.findByText(/No data found</i));
+			expect(!container.querySelector("table"));
+		});
+	});
+
+	it("Test Component MoviesWinners - Success Api", async () => {
+		const user = userEvent.setup();
+
+		// eslint-disable-next-line
+		let spyApi = jest.spyOn(MovieService, "getMoviesPerYear").mockResolvedValue({ data: [] } as any); // the function that we want to mock/spy
+
+		const { container } = render(<MoviesWinners />);
+
+		await waitFor(() => {
+			expect(screen.findByText(/List movie winners by year/i));
+			expect(spyApi).toBeCalledTimes(1);
+			expect(screen.findByText(/No data found</i));
+			expect(!container.querySelector("table"));
+		});
+
+		const valueSearch = [
 			{
-				id: 193,
-				year: 2017,
-				title: "Baywatch",
-				studios: ["Paramount Pictures"],
-				producers: ["Beau Flynn", "Douglas Schwartz", "Gregory J. Bonann", "Ivan Reitman", "Michael Berk"],
-				winner: false,
-			},
-			{
-				id: 194,
-				year: 2017,
-				title: "Fifty Shades Darker",
-				studios: ["Universal Pictures"],
-				producers: ["Dana Brunetti", "E. L. James", "Marcus Viscidi", "Michael De Luca"],
-				winner: false,
-			},
-			{
-				id: 195,
-				year: 2017,
-				title: "The Mummy",
-				studios: ["Universal Pictures"],
-				producers: ["Alex Kurtzman", "Chris Morgan", "Sarah Bradshaw", "Sean Daniel"],
-				winner: false,
-			},
-			{
-				id: 196,
-				year: 2017,
-				title: "Transformers: The Last Knight",
-				studios: ["Paramount Pictures"],
-				producers: ["Don Murphy", "Ian Bryce", "Lorenzo di Bonaventura", "Tom DeSanto"],
-				winner: false,
+				id: 96,
+				year: 1998,
+				title: "An Alan Smithee Film: Burn Hollywood Burn",
+				studios: ["Hollywood Pictures"],
+				producers: ["Ben Myron", "Joe Eszterhas"],
+				winner: true,
 			},
 		];
+
 		// eslint-disable-next-line
-		const spyApi = jest.spyOn(MovieService, "getMoviesPerYear").mockResolvedValue({ data: valueGet } as any); // the function that we want to mock/spy
+		spyApi.mockResolvedValue({ data: valueSearch } as any);
 
-		render(<MoviesWinners />);
+		user.type(screen.getByTestId("searchByYear"), "1997");
 
-		expect(spyApi).toBeCalledTimes(1);
-		expect(await screen.findByText(/Baywatch/i)).toBeInTheDocument();
+		const btnSearchById = getByTestId(container, "searchByYearBtn");
+		fireEvent.click(btnSearchById);
+
+		await waitFor(() => {
+			expect(screen.findByText(/List movie winners by year/i));
+			expect(spyApi).toBeCalledTimes(1);
+			expect(screen.findByText(/An Alan Smithee Film: Burn Hollywood Burn/i));
+			expect(container.querySelector("table"));
+		});
 	});
 
-	it("Test Component <ProducersInterval />", async () => {
+	it("Test Component MoviesWinners - Error Api", async () => {
+		const networkError = new Error("Some network error");
+		// eslint-disable-next-line
+		const spyApi = jest.spyOn(MovieService, "getMoviesPerYear").mockRejectedValueOnce(networkError); // the function that we want to mock/spy
+
+		const { container } = render(<MoviesWinners />);
+
+		await waitFor(() => {
+			expect(screen.findByText(/List movie winners by year/i));
+			expect(spyApi).toBeCalledTimes(1);
+			expect(screen.findByText(/No data found</i));
+			expect(!container.querySelector("table"));
+		});
+	});
+
+	it("Test Component ProducersInterval - Success Api", async () => {
 		const valueGet = {
 			min: [
 				{
@@ -124,13 +149,32 @@ describe("<ListWinnersYears />", () => {
 		// eslint-disable-next-line
 		const spyApi = jest.spyOn(MovieService, "getMaxMinIntervalProducers").mockResolvedValue({ data: valueGet } as any); // the function that we want to mock/spy
 
-		render(<ProducersInterval />);
+		const { container } = render(<ProducersInterval />);
 
-		expect(spyApi).toBeCalledTimes(1);
-		expect(await screen.findByText(/Joel Silver/i)).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.findByText(/Producers with longest and shortest interval between wins/i));
+			expect(spyApi).toBeCalledTimes(1);
+			expect(screen.findByText(/Joel Silver/i));
+			expect(container.querySelector("table"));
+		});
 	});
 
-	it("Test Component <TopStudios />", async () => {
+	it("Test Component ProducersInterval - Error Api", async () => {
+		const networkError = new Error("Some network error");
+		// eslint-disable-next-line
+		const spyApi = jest.spyOn(MovieService, "getMaxMinIntervalProducers").mockRejectedValueOnce(networkError); // the function that we want to mock/spy
+
+		const { container } = render(<ProducersInterval />);
+
+		await waitFor(() => {
+			expect(screen.findByText(/Producers with longest and shortest interval between wins/i));
+			expect(spyApi).toBeCalledTimes(1);
+			expect(screen.findByText(/No data found</i));
+			expect(!container.querySelector("table"));
+		});
+	});
+
+	it("Test Component TopStudios - Success Api", async () => {
 		const valueGet = {
 			studios: [
 				{
@@ -250,9 +294,28 @@ describe("<ListWinnersYears />", () => {
 		// eslint-disable-next-line
 		const spyApi = jest.spyOn(MovieService, "getStudiosCount").mockResolvedValue({ data: valueGet } as any); // the function that we want to mock/spy
 
-		render(<TopStudios />);
+		const { container } = render(<TopStudios />);
 
-		expect(spyApi).toBeCalledTimes(1);
-		expect(await screen.findByText(/Columbia Pictures/i)).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.findByText(/Top 3 studios with winners/i));
+			expect(spyApi).toBeCalledTimes(1);
+			expect(screen.findByText(/Columbia Pictures/i));
+			expect(container.querySelector("table"));
+		});
+	});
+
+	it("Test Component TopStudios - Error Api", async () => {
+		const networkError = new Error("Some network error");
+		// eslint-disable-next-line
+		const spyApi = jest.spyOn(MovieService, "getStudiosCount").mockRejectedValueOnce(networkError); // the function that we want to mock/spy
+
+		const { container } = render(<TopStudios />);
+
+		await waitFor(() => {
+			expect(screen.findByText(/Top 3 studios with winners/i));
+			expect(spyApi).toBeCalledTimes(1);
+			expect(screen.findByText(/No data found</i));
+			expect(!container.querySelector("table"));
+		});
 	});
 });

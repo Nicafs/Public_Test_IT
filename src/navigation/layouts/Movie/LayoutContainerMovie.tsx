@@ -70,6 +70,7 @@ export const LayoutContainerMovie = ({ paths, children }) => {
 			>
 				<Grid id="container-menu" container sx={{ flexGrow: "1", flexWrap: "nowrap", display: { xs: "none", md: "flex" } }}>
 					<BoxBarCustom
+						data-testid="customMenu"
 						sx={{
 							width: drawerWidth,
 							flexShrink: "0",
@@ -100,7 +101,7 @@ export const LayoutContainerMovie = ({ paths, children }) => {
 				</Grid>
 
 				<Box sx={{ display: { xs: "block", md: "none" } }}>
-					<Box component="nav">
+					<Box component="nav" data-testid="customMenu">
 						<MenuMovie mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} drawerWidth={drawerWidth} paths={paths} />
 					</Box>
 
